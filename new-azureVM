@@ -7,7 +7,7 @@ Function Assert-VMonline {
     Function to make sure a VM is created and running before running subsequent commands. This will loop with a definable wait time before checking again. It won't exit the loop until the server passes the check.
 
     .EXAMPLE
-    Assert-VMonline -ResourceGroupName CCAT24RGPEQBN -VMname "$Location`T24APP$CUS$SetEV$T"
+    Assert-VMonline -ResourceGroupName CCAT24RGPEQBN -VMname "$Location$CUS$SetEV$T"
 
     #>
 
@@ -36,7 +36,7 @@ function New-AzureVM {
     Creates new VM per standards
     
     .DESCRIPTION
-    Creates new Azure Virtual Machine with given values and Temenos standards. 
+    Creates new Azure Virtual Machine with given values and some standards. 
     
     .PARAMETER resourceGroup
     Resource group object to put VM into
