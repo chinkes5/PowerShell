@@ -80,5 +80,3 @@ function Get-MenuSelection {
     
     return $MenuItems[$pos]
 }
-
-Export-ModuleMember -Function Get-MenuSelection
