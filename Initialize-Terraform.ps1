@@ -53,7 +53,7 @@ Function Initialize-Terraform {
     # $env:Path += ";$TFPath"
     # setx /M path "%PATH%;$TFPath"
     [Environment]::SetEnvironmentVariable("PATH", "$($Env:PATH);$TFPath", [EnvironmentVariableTarget]::Machine)
-
+    $env:Path.Split(';')
 
     Write-Output "Current Terraform Version after script has run:"
     terraform -version
