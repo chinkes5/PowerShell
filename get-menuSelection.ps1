@@ -1,5 +1,5 @@
 function Get-MenuSelection {
-<#
+    <#
     .SYNOPSIS
         Displays a selection menu and returns the selected item
     
@@ -39,7 +39,7 @@ function Get-MenuSelection {
         # Padding the menu prompt to center it
         $prompt = $MenuPrompt
         $maxLineLength = ($MenuItems | Measure-Object -Property Length -Maximum).Maximum + 4
-        while ($prompt.Length -lt $maxLineLength+4) {
+        while ($prompt.Length -lt $maxLineLength + 4) {
             $prompt = " $prompt "
         }
         Write-Host $prompt -ForegroundColor Green

@@ -116,7 +116,7 @@ $credential = Get-Credential -Message "Domain user for $($domain.Name)" -UserNam
 Invoke-Command -ComputerName $domain.Value -Credential $credential -ScriptBlock {
 
     Write-Output "filter- Name -like `'$USING:userName`'"
-    $userResults = Get-ADUser -Filter {Name -like $USING:userName} -Properties "DisplayName", "msDS-UserPasswordExpiryTimeComputed", `
+    $userResults = Get-ADUser -Filter { Name -like $USING:userName } -Properties "DisplayName", "msDS-UserPasswordExpiryTimeComputed", `
         "LockedOut", "PasswordExpired", "LastLogonDate", "LastBadPasswordAttempt", "AccountLockoutTime"
 
     if ($userResults.Count -lt 1) { 

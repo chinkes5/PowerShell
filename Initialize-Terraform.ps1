@@ -1,5 +1,5 @@
 Function Initialize-Terraform {
-<#
+    <#
 .SYNOPSIS
     A script to take a downloaded ZIP of Terraform and install it in a given location
 .DESCRIPTION
@@ -12,8 +12,8 @@ Function Initialize-Terraform {
 #>
     [CmdletBinding()]
     param (
-        [Parameter(HelpMessage = "The path to the terraform zip file",Mandatory)]$TFzip,
-        [Parameter(HelpMessage='Path to where you want Terraform running from, default is C:\Program Files')]$TFPath = "C:\Program Files\Terraform\"
+        [Parameter(HelpMessage = "The path to the terraform zip file", Mandatory)]$TFzip,
+        [Parameter(HelpMessage = 'Path to where you want Terraform running from, default is C:\Program Files')]$TFPath = "C:\Program Files\Terraform\"
     )
 
     if (Test-Path $TFPath) {

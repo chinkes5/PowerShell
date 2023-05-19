@@ -32,21 +32,21 @@ Function Test-portTCP {
         Write-Verbose "Working on port $port..."
 
         $PortUsage = @{
-            "WINS replication" = 42;
-            "DNS" = 53;
-            "Kerberos" = 88;
-            "RPC" = 135;
-            "NetBIOS name service" = 137;
-            "NetBIOS datagram" = 138;
-            "NetBIOS session service" = 139;
-            "SMB" = 445;
-            "LDAP" = 389;
-            "Secure LDAP" = 636;
-            "WINS resolution" = 1512;
-            "Global Catalog LDAP" = 3268;
+            "WINS replication"            = 42;
+            "DNS"                         = 53;
+            "Kerberos"                    = 88;
+            "RPC"                         = 135;
+            "NetBIOS name service"        = 137;
+            "NetBIOS datagram"            = 138;
+            "NetBIOS session service"     = 139;
+            "SMB"                         = 445;
+            "LDAP"                        = 389;
+            "Secure LDAP"                 = 636;
+            "WINS resolution"             = 1512;
+            "Global Catalog LDAP"         = 3268;
             "Secure Global Catalog LDAP " = 3269;
         }
-        if($PortUsage[$port]){
+        if ($PortUsage[$port]) {
             Write-Verbose "Swapping $port for port number..."
             $port = $PortUsage[$port]
         }

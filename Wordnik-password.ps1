@@ -2,7 +2,7 @@ function new-passwordAPI() {
     #api is at https://developer.wordnik.com/docs#!/words/getRandomWord with explaination of the options
     # could also use https://github.com/nightblade9/simple-english-dictionary to get own dictionary
 
-<#
+    <#
 .SYNOPSIS
     Makes passwords with two random words, a number, and a symbol in a random order
 .DESCRIPTION
@@ -12,18 +12,18 @@ function new-passwordAPI() {
 .EXAMPLE
     New-Password -longWords
 #>
-[CmdletBinding()]
-param (
-    [Parameter(HelpMessage='Normally the words are 4-6 letters, using this flag gets you 6-8 letter words')][switch]$longWords,
-    [Parameter(HelpMessage='Using this flag gets you three words instead of two')][switch]$extraLongWords
-)
+    [CmdletBinding()]
+    param (
+        [Parameter(HelpMessage = 'Normally the words are 4-6 letters, using this flag gets you 6-8 letter words')][switch]$longWords,
+        [Parameter(HelpMessage = 'Using this flag gets you three words instead of two')][switch]$extraLongWords
+    )
     Process {
         
-        if($longWords){
+        if ($longWords) {
             $minLength = 6
             $maxLength = 8
         }
-        else{
+        else {
             $minLength = 4
             $maxLength = 6
         }
@@ -37,7 +37,7 @@ param (
             Write-Verbose "Word 1- $letter1"
             $letter2 = (Invoke-RestMethod -Uri $wordURL -Method GET).word
             Write-Verbose "Word 2- $letter2"
-            if($extraLongWords){
+            if ($extraLongWords) {
                 $letter3 = (Invoke-RestMethod -Uri $wordURL -Method GET).word
                 Write-Verbose "Word 3- $letter3"
                 $passwordArray = @($number.ToString(), $letter1, $letter2, $letter3, $symbols[(Get-Random -Maximum ($symbols.Count))])

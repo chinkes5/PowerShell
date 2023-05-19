@@ -11,13 +11,13 @@ The server name to split.
 Split-ServerName -serverName DENWEB01-D
 
 ***** Should return *****
-Datacenter    : Nutanix
+Datacenter    : DenverDataCentre
 Name          : DENAERP01-D
 Domain        : dev
 FDQN          : denaerp01-d.dev.host.com
 ServerCountID : 01
 Environment   : None
-Role          : Web Server
+Role          : Acumentica ERP
 #>
     [CmdletBinding()]
     param (
@@ -151,17 +151,17 @@ Role          : Web Server
         switch ($FoundDatacenter.ToUpper()) {
             'DEN' {
                 Write-Verbose "Server name starts with DEN, must be in Denver"
-                $Datacenter = "DenverDataCentre"
+                $Datacenter = "Denver Data Centre"
                 break
             }
             'CIN' {
                 Write-Verbose "Server name starts with CIN, must be Cincinnati data center"
-                $Datacenter = "CincinnatiDataCentre"
+                $Datacenter = "Cincinnati Data Centre"
                 break
             }
             default {
                 Write-Verbose "Server name does not start with D, probably legacy stuff"
-                $Datacenter = "DenverDataCentre-Hosted"
+                $Datacenter = "Denver Data Centre-Legacy"
             }
         }
     

@@ -9,7 +9,7 @@ function Get-ServerUptime {
     [CmdletBinding()]
     param (
         [Parameter(HelpMessage = 'Additionally, get the last boot event, if can be found')][switch]$LastBootEvent,
-        [Parameter(HelpMessage='The number of events to search for last boot events')][int]$MaxEvents = 5000
+        [Parameter(HelpMessage = 'The number of events to search for last boot events')][int]$MaxEvents = 5000
     )
     try {
         if ($LastBootEvent) {
