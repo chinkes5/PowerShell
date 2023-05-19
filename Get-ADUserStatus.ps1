@@ -4,19 +4,19 @@ function Set-OU {
     )
     Write-Verbose "Setting OU for domain server: $Domain"
     switch -wildcard ($Domain) {
-        "*.test.qrails.com" { 
+        "*.test.example.com" { 
             $OU = "DC=test,DC=example,DC=com"
             break
         }
-        "*.prod.qrails.com" { 
+        "*.prod.example.com" { 
             $OU = "DC=prod,DC=example,DC=com"
             break
         }
-        "*.dmz.qrails.com" { 
+        "*.dmz.example.com" { 
             $OU = "DC=dmz,DC=example,DC=com"
             break
         }
-        "*.testdmz.qrails.com" { 
+        "*.testdmz.example.com" { 
             $OU = "DC=testdmz,DC=example,DC=com"
             break
         }
