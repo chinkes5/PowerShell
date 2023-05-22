@@ -14,7 +14,7 @@ Split-ServerName -serverName DENWEB01-D
 Datacenter    : DenverDataCentre
 Name          : DENAERP01-D
 Domain        : dev
-FDQN          : denaerp01-d.dev.host.com
+FDQN          : denaerp01-d.dev.example.com
 ServerCountID : 01
 Environment   : None
 Role          : Acumentica ERP
@@ -265,6 +265,8 @@ Role          : Acumentica ERP
             $Role = $RoleDescriptions.$FoundRole
             Write-Verbose "A role description was found, returning `'$Role`'"
         }
+
+        $FDQN = "$Name.$Domain.example.com"
 
         return [PSCustomObject]@{
             Datacenter    = $Datacenter

@@ -1,2 +1,2 @@
 # PowerShell
-random PowerShell scripts for specific purposes
+Random PowerShell scripts for specific purposes

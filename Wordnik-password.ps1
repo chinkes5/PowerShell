@@ -15,7 +15,8 @@ function new-passwordAPI() {
     [CmdletBinding()]
     param (
         [Parameter(HelpMessage = 'Normally the words are 4-6 letters, using this flag gets you 6-8 letter words')][switch]$longWords,
-        [Parameter(HelpMessage = 'Using this flag gets you three words instead of two')][switch]$extraLongWords
+        [Parameter(HelpMessage = 'Using this flag gets you three words instead of two')][switch]$extraLongWords,
+        [Parameter(HelpMessage = 'Wordnik API key', Mandatory = $true)][string]$apiKey
     )
     Process {
         
@@ -27,7 +28,6 @@ function new-passwordAPI() {
             $minLength = 4
             $maxLength = 6
         }
-        $apiKey = ""
         $wordURL = "https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=$minLength&maxLength=$maxLength&api_key=$apiKey"
         $symbols = @("!", "@", "#", "$", "%", "^", "&", "_", "-")
         $number = get-random -minimum 11 -maximum 99
