@@ -1,20 +1,49 @@
 Function Initialize-Terraform {
     <#
 .SYNOPSIS
-    A script to take a downloaded ZIP of Terraform and install it in a given location
+    A script to download ZIP of Terraform and install it in a given location
 .DESCRIPTION
     This will look at the given ZIP file and try to install it, setting the path environment variable, in the path you give.
 .PARAMETER TFzip
-    This the ZIP file you downloaded from Terraform, likely https://developer.hashicorp.com/terraform/downloads. A full path and the file is required.
+    Path to save the download at, default is your home directory, i.e. $HOME\Downloads.
 .PARAMETER TFPath
+    Path to Terraform program, default is C:\Program Files
 .EXAMPLE
-    Initialize-Terraform -TFzip C:\Downloads\terraform_1.4.4_windows_amd64.zip
+    Initialize-Terraform -TFzip C:\Downloads\
+.LINK
+    https://gist.github.com/rchaganti/078556db37f43ec4d33de8f3a2bb9b16
 #>
     [CmdletBinding()]
     param (
-        [Parameter(HelpMessage = "The path to the terraform zip file", Mandatory)]$TFzip,
+        [Parameter(HelpMessage = "The path to the terraform zip file")]$TFzipPath = "$HOME\Downloads\",
         [Parameter(HelpMessage = 'Path to where you want Terraform running from, default is C:\Program Files')]$TFPath = "C:\Program Files\Terraform\"
     )
+
+    # Starting with version 1.5.5, as that's where we are today, will hope to find latest from this...
+    # TODO: use the ideas from link to get the version stuff better
+    Write-Verbose "Downloading checksums and hope to find the latest version..."
+    $ChecksumURL = "https://releases.hashicorp.com/terraform/1.5.5/terraform_1.5.5_SHA256SUMS"
+    $ChecksumList = Invoke-RestMethod -Uri $ChecksumURL -ContentType "text/plain"
+    foreach ($line in $ChecksumList -split "`n") {
+        Write-Verbose "working on $line..."
+        if ($line.Contains("_windows_386.zip")) {
+            # $ChecksumList[$ChecksumList.IndexOf($line)]
+            $Checksum = ($line.Split(' ')[0]).Trim()
+            $file = ($line.Split(' ')[2]).Trim()
+            $version = $file.Split('_')[1]
+            break
+        }
+    }
+
+    Write-Verbose "Downloading Terraform $version..."
+    $DownloadURL = "https://releases.hashicorp.com/terraform/$version/terraform_$version`_windows_386.zip"
+    Invoke-RestMethod -Uri $DownloadURL -OutFile (Join-Path $TFzipPath -ChildPath "terraform_$version`_windows_386.zip")
+
+    Write-Verbose "Testing Checksum..."
+    $downloadHash = Get-FileHash -Path $TFzipPath -Algorithm SHA256
+    if ($downloadHash.Hash -ne $Checksum) {
+        throw "Checksums don't match!"
+    }
 
     if (Test-Path $TFPath) {
         Write-Verbose "Found the Terraform program folder"
