@@ -68,7 +68,7 @@ Function Initialize-Terraform {
             Unblock-File -Path $DownloadFile
         }
     
-        if (Test-Path $TFPath) {
+        if (Test-Path $TFPath -PathType Container) {
             Write-Verbose "Found the Terraform program folder!"
             $TFexe = Get-ChildItem $TFPath
             if ($TFexe.Name -ne "terraform.exe") {
@@ -82,9 +82,9 @@ Function Initialize-Terraform {
             # the expand-archive will make the destination if doesn't exist but I'm being extra careful
         }
     
-        if (test-path $TFzipPath) {
+        if (test-path $DownloadFile -PathType Leaf) {
             Write-Verbose "Found the path as given, unzipping Terraform..."
-            Expand-Archive -LiteralPath $TFzipPath -DestinationPath $TFPath -Force
+            Expand-Archive -LiteralPath $DownloadFile -DestinationPath $TFPath -Force
         }
         else {
             throw "Can't find path to terraform zip file!"
@@ -106,7 +106,6 @@ Function Initialize-Terraform {
         # setx /M path "%PATH%;$TFPath"
         [Environment]::SetEnvironmentVariable("PATH", "$($Env:PATH);$TFPath", [EnvironmentVariableTarget]::Machine)
         $env:Path.Split(';')
-    
     }
     catch {
         Throw "Can't get install Terraform - $($Error[0].Exception.Message)"
