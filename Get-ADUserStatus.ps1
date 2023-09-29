@@ -41,7 +41,7 @@ function Get-UserFromAD {
     .EXAMPLE
         Get-UserFromAD -userName $userName ## returns a user matching given name or name part, if wildcards used
     .EXAMPLE
-        Get-UserFromAD -userName $userName -elevated ## returns elvated user account matching given name or name part, if wildcards used
+        Get-UserFromAD -userName $userName -elevated ## returns elevated user account matching given name or name part, if wildcards used
     .EXAMPLE
         Get-UserFromAD -userName $userName -disabled ## returns a disabled user account matching given name or name part, if wildcards used
     #>

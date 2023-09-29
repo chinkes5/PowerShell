@@ -4,7 +4,7 @@ Function Private:Write-Log() {
         [Parameter(HelpMessage = 'The message to put in the log file', Mandatory = $true)][String]$messageToLog,
         [Parameter(HelpMessage = 'Name of log file')][string]$logName = "Password_Recycling",
         [Parameter(HelpMessage = 'Path to log file')][string]$logPath = "C:\logs\",
-        [Parameter(HelpMessage = 'Number of days of logs to keep, reducing this will irrevokably delete files')][int]$LogDaysToKeep = 365
+        [Parameter(HelpMessage = 'Number of days of logs to keep, reducing this will irrevocably delete files')][int]$LogDaysToKeep = 365
     )
 
     $now = get-date

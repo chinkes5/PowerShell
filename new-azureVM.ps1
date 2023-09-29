@@ -189,7 +189,7 @@ function New-AzureVM {
             ResourceGroupName = $resourceGroup.ResourceGroupName
             Location          = $resourceGroup.Location
             VM                = $vmConfig
-            Zone              = "1" #TODO - availabilty sets
+            Zone              = "1" #TODO - availability sets
         }
         Write-Verbose "Making VM: $($vmsz.VMName)... "
         New-AzVM @vm
@@ -230,7 +230,7 @@ function New-AzureVM {
                     Write-Verbose "$return.name is alive" 
         
                     Invoke-Command -ComputerName $return.name -ScriptBlock {
-                        Write-Verbose "Formating E drive on $ENV:COMPUTERNAME"
+                        Write-Verbose "Formatting E drive on $ENV:COMPUTERNAME"
                         # Check if CD-ROM is using E
                         Get-WmiObject -Class Win32_volume -Filter 'DriveType=5' |
                         Select-Object -First 1 |
@@ -244,7 +244,7 @@ function New-AzureVM {
                     }
                 } 
 
-                Write-Verbose "Update licence to Azure Hybrid Benefit" 
+                Write-Verbose "Update license to Azure Hybrid Benefit" 
                 $return.LicenseType = "Windows_Server"
                 Update-AzVM -ResourceGroupName $resourceGroup.ResourceGroupName -VM $return
             }
@@ -347,7 +347,7 @@ function New-AzureSecurityGroup {
         [string] $sourceAddressPrefix = '*',
         [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()][string] $sourcePortRange,
         [string] $destinationAddressPrefix = '*',
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()][string] $destintationPortRange,
+        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()][string] $destinationPortRange,
         [Parameter(Mandatory = $true)][ValidateSetAttribute("Allow", "Deny")] [string] $Access
     )
     try {
@@ -362,7 +362,7 @@ function New-AzureSecurityGroup {
             -SourceAddressPrefix $sourceAddressPrefix `
             -SourcePortRange $sourcePortRange `
             -DestinationAddressPrefix $destinationAddressPrefix `
-            -DestinationPortRange $destintationPortRange `
+            -DestinationPortRange $destinationPortRange `
             -Access $Access
     }
     catch {

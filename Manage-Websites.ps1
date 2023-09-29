@@ -62,8 +62,8 @@ function Get-SiteDetails {
                 LogRolloverPeriod    = $site.logFile.period
             }
 
-            $bingings = $site.bindings.Collection
-            foreach ($protocol in $bingings) {
+            $bindings = $site.bindings.Collection
+            foreach ($protocol in $bindings) {
                 if ($protocol.protocol -eq "http") {
                     $siteInfo.HttpBindings += $protocol.bindingInformation
                 }
@@ -402,13 +402,13 @@ function New-Website() {
 .PARAMETER siteIP
     IP site will listen on
 .PARAMETER sitePort
-    optional port for inital binding (default is 80)
+    optional port for initial binding (default is 80)
 .PARAMETER siteID
     optional site ID
 .PARAMETER appPoolName
-    applicaiton pool site should run under (optional)
+    application pool site should run under (optional)
 .PARAMETER preloadEnabled
-    flag to set preload if required, typically set for main sites but not tools, LIS, Bene-calcs, maintenace, etc
+    flag to set preload if required, typically set for main sites but not tools, LIS, Bene-calcs, maintenance, etc
 .PARAMETER UseSSL
     flag to add port 443 when binding the site
 .PARAMETER certPath
