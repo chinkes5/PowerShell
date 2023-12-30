@@ -38,7 +38,7 @@ This will minify all the PowerShell scripts in the C:\Scripts folder and save th
         # Regex to match PowerShell cmdlets
         $CMDregex = '[a-zA-Z0-9_]+-[a-zA-Z0-9_]+'
         # Regex to match comments
-        $COMregex = '#.*$'
+        $COMregex = '^(?<!<)#(?!>)'
         # Regex to match blank or whitespace
         $BLANKregex = '^\s*$'
         # Array of variable name to ignore 'cause they are default or built-in
@@ -55,6 +55,10 @@ This will minify all the PowerShell scripts in the C:\Scripts folder and save th
     process {
         Write-Verbose "Given $($ScriptFiles.Count) files..."
         :fileLoop foreach ($file in $ScriptFiles) {
+            if($file.Extension -ne ".ps1") {
+                Write-Verbose "Not a PowerShell script, skipping $($file.Name)..."
+                continue
+            }
             Write-Verbose "Reading $($file.Name)..."
             $scriptContent = Get-Content -Path $file.FullName
 
