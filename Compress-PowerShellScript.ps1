@@ -4,6 +4,7 @@ function Compress-PowerShellScript {
 Compresses PowerShell scripts by swapping the variable names for alphabetic characters as well as the shortest cmdlet aliases
 .DESCRIPTION
 You can input one or more files to compress. If no files are specified, all files in the current directory will be compressed and saved to the output path. At the end of each file a small report of the variable changes and the number of characters will be written to the console.
+There is a limit of 26 variables in the script, as I'm replacing with a to z. After that, the file is skipped.
 .EXAMPLE
 $files = Get-ChildItem -Path "C:\Scripts\*.ps1"
 $files | Compress-PowerShellScript -OutputPath "C:\MinifiedScripts"
@@ -13,7 +14,7 @@ This will minify all the PowerShell scripts in the C:\Scripts folder and save th
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true, HelpMessage = 'The path to save the minified PowerShell scripts')]
-        [ValidateNotNullOrEmpty()][System.IO.Path]$OutputPath,
+        [ValidateNotNullOrEmpty()][string]$OutputPath,
         [Parameter(Mandatory = $true, HelpMessage = 'The PowerShell scripts to minify')][System.IO.FileInfo[]]$ScriptFiles
     )
 
@@ -24,12 +25,16 @@ This will minify all the PowerShell scripts in the C:\Scripts folder and save th
             if (-not $aliases) {
                 return $cmdletName
             }
-            $shortestAlias = $aliases | Sort-Object Name.Length -First 1
+            $shortestAlias = $aliases | Sort-Object Name.Length -Top 1
             return $shortestAlias.Name
         }
 
+        if(-Not (Test-Path -Path $OutputPath -PathType Container)) {
+            throw "Output path does not exist!"
+        }
+
         # Regex to match PowerShell variables
-        $VARregex = '\$([a-zA-Z0-9_]+)'
+        $VARregex = '\$([a-zA-Z0-9]+)'
         # Regex to match PowerShell cmdlets
         $CMDregex = '[a-zA-Z0-9_]+-[a-zA-Z0-9_]+'
         # Regex to match comments
@@ -48,8 +53,9 @@ This will minify all the PowerShell scripts in the C:\Scripts folder and save th
     }
 
     process {
-        foreach ($file in $ScriptFiles) {
-            # Read the PowerShell file
+        Write-Verbose "Given $($ScriptFiles.Count) files..."
+        :fileLoop foreach ($file in $ScriptFiles) {
+            Write-Verbose "Reading $($file.Name)..."
             $scriptContent = Get-Content -Path $file.FullName
 
             # Dictionary to store the new names
@@ -82,7 +88,8 @@ This will minify all the PowerShell scripts in the C:\Scripts folder and save th
                                     $varDict[$varName] = "`$" + [char]$ascii
                                     $ascii++
                                     if ($ascii -gt (97 + 26)) {
-                                        throw "Too many variables to swap out! We're at $([char]$ascii)."
+                                        Write-Error "Too many variables to swap out! We're at $([char]$ascii) in $($file.Name). Skipping this file..."
+                                        continue fileLoop
                                     }
                                 }
                                 Write-Verbose "Swapping `$$varName for $($varDict[$varName])..."
@@ -105,15 +112,16 @@ This will minify all the PowerShell scripts in the C:\Scripts folder and save th
                 }
             }
  
-            $minContent | Out-File -FilePath (Join-Path $OutputPath -ChildPath "$($file.BaseName).min.ps1") -Encoding utf8
+            $minContent | Out-File -FilePath (Join-Path $OutputPath -ChildPath "$($file.BaseName).min.ps1") -Encoding utf8 -Force
 
             # Report of savings and variable swaps
+            Write-Output "New File: $($file.BaseName).min.ps1"
             Write-Output "Dictionary of variable swaps:"
             $varDict.GetEnumerator() | Sort-Object Value
 
             $originalCharCount = ($scriptContent | Measure-Object -Character).Characters
             $compressedCharCount = ($minContent | Measure-Object -Character).Characters
-            $percentageSaved = (($originalCharCount - $compressedCharCount) / $originalCharCount) * 100
+            $percentageSaved = [math]::Round((($originalCharCount - $compressedCharCount) / $originalCharCount) * 100)
             Write-Output "Old file char: $originalCharCount"
             Write-Output "New file char: $compressedCharCount"
             Write-Output "Percentage saved: $percentageSaved%"
