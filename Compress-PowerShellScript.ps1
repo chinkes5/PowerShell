@@ -1,5 +1,5 @@
 function Compress-PowerShellScript {
-<#
+    <#
 .SYNOPSIS
 Compresses PowerShell scripts by swapping the variable names for alphabetic characters as well as the shortest cmdlet aliases
 .DESCRIPTION
@@ -13,9 +13,8 @@ This will minify all the PowerShell scripts in the C:\Scripts folder and save th
 #>    
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $true, HelpMessage = 'The path to save the minified PowerShell scripts')]
-        [ValidateNotNullOrEmpty()][string]$OutputPath,
-        [Parameter(Mandatory = $true, HelpMessage = 'The PowerShell scripts to minify')][System.IO.FileInfo[]]$ScriptFiles
+        [Parameter(Mandatory = $true, HelpMessage = 'The path to save the minified PowerShell scripts to')][ValidateNotNullOrEmpty()][string]$OutputPath,
+        [Parameter(Mandatory = $true, HelpMessage = 'Array of PowerShell script files to minify')][System.IO.FileInfo[]]$ScriptFiles
     )
 
     begin {
@@ -25,16 +24,23 @@ This will minify all the PowerShell scripts in the C:\Scripts folder and save th
             if (-not $aliases) {
                 return $cmdletName
             }
-            $shortestAlias = $aliases | Sort-Object Name.Length -Top 1
+            if ($PSVersionTable.PSVersion.Major -lt 6) {
+                $shortestAlias = $aliases | Sort-Object Name.Length | Select-Object -First 1
+            }
+            else {
+                $shortestAlias = $aliases | Sort-Object Name.Length -Top 1
+            }
             return $shortestAlias.Name
         }
 
-        if(-Not (Test-Path -Path $OutputPath -PathType Container)) {
+        if (-Not (Test-Path -Path $OutputPath -PathType Container)) {
             throw "Output path does not exist!"
         }
 
         # Regex to match PowerShell variables
         $VARregex = '\$([a-zA-Z0-9]+)'
+        # Regext to match parameter declarations
+        $PARAMregex = '^\s*(?<parameter>\[Parameter\s*\().*\$(?<variable>[a-zA-Z0-9]+)'
         # Regex to match PowerShell cmdlets
         $CMDregex = '[a-zA-Z0-9_]+-[a-zA-Z0-9_]+'
         # Regex to match comments
@@ -55,7 +61,7 @@ This will minify all the PowerShell scripts in the C:\Scripts folder and save th
     process {
         Write-Verbose "Given $($ScriptFiles.Count) files..."
         :fileLoop foreach ($file in $ScriptFiles) {
-            if($file.Extension -ne ".ps1") {
+            if ($file.Extension -ne ".ps1") {
                 Write-Verbose "Not a PowerShell script, skipping $($file.Name)..."
                 continue
             }
@@ -81,6 +87,10 @@ This will minify all the PowerShell scripts in the C:\Scripts folder and save th
                             Write-Verbose "Swapping '$cmdletName' for '$shortestAlias'..."
                             $line = $line.Replace($cmdletName, $shortestAlias)
                         }
+                    }
+                    $PARAMregex {
+                        Write-Verbose "Found parameter declaration to alias..."
+                        $line = $line.Replace("[Parameter(", "[Alias('$($matches.variable)')][Parameter(")
                     }
                     $VARregex {
                         Write-Verbose "Found variable to swap out..."
