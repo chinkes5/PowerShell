@@ -38,7 +38,7 @@ This will minify all the PowerShell scripts in the C:\Scripts folder and save th
         }
 
         # Regex to match PowerShell variables
-        $VARregex = '\$([a-zA-Z0-9]+)'
+        $VARregex = '(?<!`)\$([a-zA-Z0-9]+)'
         # Regext to match parameter declarations
         $PARAMregex = '^\s*(?<parameter>\[Parameter\s*\().*\$(?<variable>[a-zA-Z0-9]+)'
         # Regex to match PowerShell cmdlets
