@@ -10,6 +10,11 @@ $files = Get-ChildItem -Path "C:\Scripts\*.ps1"
 $files | Compress-PowerShellScript -OutputPath "C:\MinifiedScripts"
 
 This will minify all the PowerShell scripts in the C:\Scripts folder and save them in the C:\MinifiedScripts folder
+
+.LINK
+https://github.com/StartAutomating/PSMinifier
+.LINK
+https://github.com/ikarstein/minifyPS/tree/master
 #>    
     [CmdletBinding()]
     param (
