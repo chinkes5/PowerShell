@@ -38,6 +38,18 @@ https://github.com/ikarstein/minifyPS/tree/master
             return $shortestAlias.Name
         }
 
+        function private:Convert-ToBase26 {
+            param([int]$num)
+            $alphabet = 97..122 | ForEach-Object { [char]$_ }
+            $result = ""
+            while ($num -gt 0) {
+                $num-- # Adjust for 0-indexing
+                $result = $alphabet[$num % 26] + $result
+                $num = [math]::Floor($num / 26)
+            }
+            return $result
+        }
+
         if (-Not (Test-Path -Path $OutputPath -PathType Container)) {
             throw "Output path does not exist!"
         }
@@ -60,6 +72,9 @@ https://github.com/ikarstein/minifyPS/tree/master
             "matches"
             "psitem"
             "args"
+            "null"
+            "env"        
+            "_"
         )
     }
 
@@ -77,7 +92,7 @@ https://github.com/ikarstein/minifyPS/tree/master
             $varDict = @{}
 
             # The new variable names will start from ASCII value of 'a'
-            $ascii = 97
+            $ascii = 1
  
             # Process each line of the script
             $minContent = New-Object System.Collections.ArrayList
@@ -104,12 +119,8 @@ https://github.com/ikarstein/minifyPS/tree/master
                             $varName = $match.Groups[1].Value
                             if ($VARtoAllow -notcontains $varName) {
                                 if (-not $varDict.ContainsKey($varName)) {
-                                    $varDict[$varName] = "`$" + [char]$ascii
+                                    $varDict[$varName] = "`$" + (Convert-ToBase26 $ascii)
                                     $ascii++
-                                    if ($ascii -gt (97 + 26)) {
-                                        Write-Error "Too many variables to swap out! We're at $([char]$ascii) in $($file.Name). Skipping this file..."
-                                        continue fileLoop
-                                    }
                                 }
                                 Write-Verbose "Swapping `$$varName for $($varDict[$varName])..."
                                 $line = $line.Replace("`$$varName", $varDict[$varName])
