@@ -468,11 +468,11 @@ do {
                         Write-Host "Adding a new entry by importing a PFX or CER file..."
                         $pfxFilePath = Read-Host "Enter the full path to the certificate file to import"
                         if (Test-Path $pfxFilePath) {
-                            if ($filePath -match '\.pfx$') {
+                            if ($pfxFilePath -match '\.pfx$') {
                                 Import-PfxIntoKeystore -SourcePfxPath $pfxFilePath -SourcePfxPassword $certPwd -TargetKeystorePath $path.FullName -TargetKeystorePassword $certPwd -TargetKeystoreType $destStoreType
                             }
-                            elseif ($filePath -match '\.cer$') {
-                                Import-CerIntoKeystore -SourceCerPath $filePath -TargetKeystorePath $path.FullName -TargetKeystorePassword $certPwd -TargetKeystoreType $destStoreType
+                            elseif ($pfxFilePath -match '\.cer$') {
+                                Import-CerIntoKeystore -SourceCerPath $pfxFilePath -TargetKeystorePath $path.FullName -TargetKeystorePassword $certPwd -TargetKeystoreType $destStoreType
                             }
                             else {
                                 Write-Warning "Unsupported file type. Please provide a .pfx or .cer file."
